@@ -2,6 +2,8 @@
 
 #include "headers/Editor.hpp"
 
+#define regionSize 9 // 3 x 3
+
 bool sameTile(int tile0, int tile1)
 {
 	if (tile0 == tile1)
@@ -12,33 +14,212 @@ bool sameTile(int tile0, int tile1)
 	return false;
 }
 
-std::vector<std::vector<int>> region(int TL, int TC, int TR, int ML, int MC, int MR, int BL, int BC, int BR)
+bool equalRegion(std::vector<int> region0, std::vector<int> region1)
 {
-	return
+	for (unsigned int i = 0; i < regionSize; i++)
 	{
-		{TL, TC, TR},
-		{ML, MC, MR},
-		{BL, BC, BR}
-	};
-}
-
-bool equalRegion(std::vector<std::vector<int>> region0, std::vector<std::vector<int>> region1)
-{
-	for (unsigned int x = 0; x < 3; x++)
-	{
-		for (unsigned int y = 0; y < 3; y++)
+		if (region1.at(i) != 2)
 		{
-			if (region1.at(x).at(y) != 2)
+			if (region0.at(i) != region1.at(i))
 			{
-				if (region0.at(x).at(y) != region1.at(x).at(y))
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 	}
 
 	return true;
+}
+
+void Editor::declareRegions()
+{
+	regions.push_back(Region(0, 0, {2, 0, 2,
+	                                0, 1, 1,
+	                                2, 1, 1}));
+
+
+	regions.push_back(Region(1, 0, {2, 0, 2,
+	                                1, 1, 1,
+	                                1, 1, 1}));
+
+	regions.push_back(Region(2, 0, {2, 0, 2,
+	                                1, 1, 0,
+	                                1, 1, 2}));
+
+	regions.push_back(Region(3, 0, {2, 0, 2,
+	                                0, 1, 0,
+	                                2, 1, 2}));
+
+	regions.push_back(Region(4, 0, {2, 1, 1,
+	                                0, 1, 1,
+	                                2, 1, 0}));
+
+	regions.push_back(Region(5, 0, {1, 1, 2,
+	                                1, 1, 0,
+	                                0, 1, 2}));
+
+	regions.push_back(Region(6, 0, {1, 1, 1,
+	                                1, 1, 1,
+	                                1, 1, 0}));
+
+	regions.push_back(Region(7, 0, {1, 1, 1,
+	                                1, 1, 1,
+	                                0, 1, 1}));
+
+	regions.push_back(Region(0, 1, {2, 1, 1,
+	                                0, 1, 1,
+	                                2, 1, 1}));
+
+	regions.push_back(Region(1, 1, {1, 1, 1,
+	                                1, 1, 1,
+	                                1, 1, 1}));
+
+	regions.push_back(Region(2, 1, {1, 1, 2,
+	                                1, 1, 0,
+	                                1, 1, 2}));
+
+	regions.push_back(Region(3, 1, {2, 1, 2,
+	                                0, 1, 0,
+	                                2, 1, 2}));
+
+	regions.push_back(Region(4, 1, {2, 1, 0,
+	                                0, 1, 1,
+	                                2, 1, 0}));
+
+	regions.push_back(Region(5, 1, {0, 1, 2,
+	                                1, 1, 0,
+	                                0, 1, 2}));
+
+	regions.push_back(Region(6, 1, {1, 1, 0,
+	                                1, 1, 1,
+	                                1, 1, 1}));
+
+	regions.push_back(Region(7, 1, {0, 1, 1,
+	                                1, 1, 1,
+	                                1, 1, 1}));
+
+	regions.push_back(Region(0, 2, {2, 1, 1,
+	                                0, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(1, 2, {1, 1, 1,
+	                                1, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(2, 2, {1, 1, 2,
+	                                1, 1, 0,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(3, 2, {2, 1, 2,
+	                                0, 1, 0,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(4, 2, {2, 1, 0,
+	                                0, 1, 1,
+	                                2, 1, 1}));
+
+	regions.push_back(Region(5, 2, {0, 1, 2,
+	                                1, 1, 0,
+	                                1, 1, 2}));
+
+	regions.push_back(Region(6, 2, {0, 1, 0,
+	                                1, 1, 1,
+	                                0, 1, 1}));
+
+	regions.push_back(Region(7, 2, {0, 1, 0,
+	                                1, 1, 1,
+	                                1, 1, 0}));
+
+	regions.push_back(Region(0, 3, {2, 0, 2,
+	                                0, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(1, 3, {2, 0, 2,
+	                                1, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(2, 3, {2, 0, 2,
+	                                1, 1, 0,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(3, 3, {2, 0, 2,
+	                                0, 1, 0,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(4, 3, {1, 1, 0,
+	                                1, 1, 1,
+	                                1, 1, 0}));
+
+	regions.push_back(Region(5, 3, {0, 1, 1,
+	                                1, 1, 1,
+	                                0, 1, 1}));
+
+	regions.push_back(Region(6, 3, {0, 1, 1,
+	                                1, 1, 1,
+	                                0, 1, 0}));
+
+	regions.push_back(Region(7, 3, {1, 1, 0,
+	                                1, 1, 1,
+	                                0, 1, 0}));
+
+	regions.push_back(Region(0, 4, {2, 0, 2,
+	                                1, 1, 1,
+	                                1, 1, 0}));
+
+	regions.push_back(Region(1, 4, {2, 0, 2,
+	                                1, 1, 1,
+	                                0, 1, 0}));
+
+	regions.push_back(Region(2, 4, {2, 0, 2,
+	                                1, 1, 1,
+	                                0, 1, 1}));
+
+	regions.push_back(Region(3, 4, {1, 1, 1,
+	                                1, 1, 1,
+	                                0, 1, 0}));
+
+	regions.push_back(Region(4, 4, {2, 0, 2,
+	                                0, 1, 1,
+	                                2, 1, 0}));
+
+	regions.push_back(Region(5, 4, {2, 0, 2,
+	                                1, 1, 0,
+	                                0, 1, 2}));
+
+	regions.push_back(Region(6, 4, {0, 1, 1,
+	                                1, 1, 1,
+	                                1, 1, 0}));
+
+	regions.push_back(Region(7, 4, {1, 1, 0,
+	                                1, 1, 1,
+	                                0, 1, 1}));
+
+	regions.push_back(Region(0, 5, {1, 1, 0,
+	                                1, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(1, 5, {0, 1, 0,
+	                                1, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(2, 5, {0, 1, 1,
+	                                1, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(3, 5, {0, 1, 0,
+	                                1, 1, 1,
+	                                1, 1, 1}));
+
+	regions.push_back(Region(4, 5, {2, 1, 0,
+	                                0, 1, 1,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(5, 5, {0, 1, 2,
+	                                1, 1, 0,
+	                                2, 0, 2}));
+
+	regions.push_back(Region(6, 5, {0, 1, 0,
+	                                1, 1, 1,
+	                                0, 1, 0}));
 }
 
 sf::Vector3i Editor::determineTile(sf::Vector2i mapCoord, int tileset)
@@ -95,386 +276,23 @@ sf::Vector3i Editor::determineTile(sf::Vector2i mapCoord, int tileset)
 			}
 		}
 
-		std::vector<std::vector<int>> tileRegion = region(TL, TC, TR,
-	                                                      ML, MC, MR,
-	                                                      BL, BC, BR);
+		std::vector<int> tileRegion = {TL, TC, TR,
+		                               ML, MC, MR,
+		                               BL, BC, BR};
+		
+		bool null = true;
 
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   0, 1, 1,
-		                                   2, 1, 1)))
+		for (Region &region : regions)
 		{
-			crop.x = 0;
-			crop.y = 0;
+			if (equalRegion(tileRegion, region.region))
+			{
+				crop = region.crop;
+				null = false;
+				break;
+			}
 		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 1,
-		                                   1, 1, 1)))
-		{
-			crop.x = 1;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 0,
-		                                   1, 1, 2)))
-		{
-			crop.x = 2;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   0, 1, 0,
-		                                   2, 1, 2)))
-		{
-			crop.x = 3;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 1,
-		                                   0, 1, 1,
-		                                   2, 1, 0)))
-		{
-			crop.x = 4;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 2,
-		                                   1, 1, 0,
-		                                   0, 1, 2)))
-		{
-			crop.x = 5;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 1,
-		                                   1, 1, 1,
-		                                   1, 1, 0)))
-		{
-			crop.x = 6;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 1,
-		                                   1, 1, 1,
-		                                   0, 1, 1)))
-		{
-			crop.x = 7;
-			crop.y = 0;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 1,
-		                                   0, 1, 1,
-		                                   2, 1, 1)))
-		{
-			crop.x = 0;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 1,
-		                                   1, 1, 1,
-		                                   1, 1, 1)))
-		{
-			crop.x = 1;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 2,
-		                                   1, 1, 0,
-		                                   1, 1, 2)))
-		{
-			crop.x = 2;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 2,
-		                                   0, 1, 0,
-		                                   2, 1, 2)))
-		{
-			crop.x = 3;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 0,
-		                                   0, 1, 1,
-		                                   2, 1, 0)))
-		{
-			crop.x = 4;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 2,
-		                                   1, 1, 0,
-		                                   0, 1, 2)))
-		{
-			crop.x = 5;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 0,
-		                                   1, 1, 1,
-		                                   1, 1, 1)))
-		{
-			crop.x = 6;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 1,
-		                                   1, 1, 1,
-		                                   1, 1, 1)))
-		{
-			crop.x = 7;
-			crop.y = 1;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 1,
-		                                   0, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 0;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 1,
-		                                   1, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 1;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 2,
-		                                   1, 1, 0,
-		                                   2, 0, 2)))
-		{
-			crop.x = 2;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 2,
-		                                   0, 1, 0,
-		                                   2, 0, 2)))
-		{
-			crop.x = 3;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 0,
-		                                   0, 1, 1,
-		                                   2, 1, 1)))
-		{
-			crop.x = 4;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 2,
-		                                   1, 1, 0,
-		                                   1, 1, 2)))
-		{
-			crop.x = 5;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 0,
-		                                   1, 1, 1,
-		                                   0, 1, 1)))
-		{
-			crop.x = 6;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 0,
-		                                   1, 1, 1,
-		                                   1, 1, 0)))
-		{
-			crop.x = 7;
-			crop.y = 2;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   0, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 0;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 1;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 0,
-		                                   2, 0, 2)))
-		{
-			crop.x = 2;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   0, 1, 0,
-		                                   2, 0, 2)))
-		{
-			crop.x = 3;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 0,
-		                                   1, 1, 1,
-		                                   1, 1, 0)))
-		{
-			crop.x = 4;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 1,
-		                                   1, 1, 1,
-		                                   0, 1, 1)))
-		{
-			crop.x = 5;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 1,
-		                                   1, 1, 1,
-		                                   0, 1, 0)))
-		{
-			crop.x = 6;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 0,
-		                                   1, 1, 1,
-		                                   0, 1, 0)))
-		{
-			crop.x = 7;
-			crop.y = 3;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 1,
-		                                   1, 1, 0)))
-		{
-			crop.x = 0;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 1,
-		                                   0, 1, 0)))
-		{
-			crop.x = 1;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 1,
-		                                   0, 1, 1)))
-		{
-			crop.x = 2;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 1,
-		                                   1, 1, 1,
-		                                   0, 1, 0)))
-		{
-			crop.x = 3;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   0, 1, 1,
-		                                   2, 1, 0)))
-		{
-			crop.x = 4;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 0, 2,
-		                                   1, 1, 0,
-		                                   0, 1, 2)))
-		{
-			crop.x = 5;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 1,
-		                                   1, 1, 1,
-		                                   1, 1, 0)))
-		{
-			crop.x = 6;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 0,
-		                                   1, 1, 1,
-		                                   0, 1, 1)))
-		{
-			crop.x = 7;
-			crop.y = 4;
-		}
-		else
-		if (equalRegion(tileRegion, region(1, 1, 0,
-		                                   1, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 0;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 0,
-		                                   1, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 1;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 1,
-		                                   1, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 2;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 0,
-		                                   1, 1, 1,
-		                                   1, 1, 1)))
-		{
-			crop.x = 3;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(2, 1, 0,
-		                                   0, 1, 1,
-		                                   2, 0, 2)))
-		{
-			crop.x = 4;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 2,
-		                                   1, 1, 0,
-		                                   2, 0, 2)))
-		{
-			crop.x = 5;
-			crop.y = 5;
-		}
-		else
-		if (equalRegion(tileRegion, region(0, 1, 0,
-		                                   1, 1, 1,
-		                                   0, 1, 0)))
-		{
-			crop.x = 6;
-			crop.y = 5;
-		}
-		else // null
+
+		if (null)
 		{
 			crop.x = 7;
 			crop.y = 5;

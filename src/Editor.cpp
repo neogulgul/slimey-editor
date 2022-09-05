@@ -21,6 +21,13 @@ int Input::getValue()
 	return std::atoi(value.str().c_str());
 }
 
+Region::Region(unsigned int xCrop, unsigned int yCrop, std::vector<int> _region)
+{
+	crop.x = xCrop;
+	crop.y = yCrop;
+	region = _region;
+}
+
 Colors::Colors()
 {
 	background           = sf::Color(239, 202, 178);
@@ -69,6 +76,8 @@ Editor::Editor(sf::RenderWindow &_window, sf::View &_view)
 	tilesetSprites.push_back(&sprites.tileset_bounce);
 	tilesetSprites.push_back(&sprites.tileset_selection);
 
+	declareRegions();
+
 	spawnTile = sf::Vector3i(4, 0, 3);
 	exitTile  = sf::Vector3i(4, 0, 4);
 
@@ -113,10 +122,19 @@ Editor::Editor(sf::RenderWindow &_window, sf::View &_view)
 
 
 
+// this is in DetermineTile.cpp
+// void Editor::declareRegions()
+// {
+// 	...
+// }
+
+
+
 void Editor::resetView()
 {
 	if (dragging) { return; }
 	view->setCenter(viewWidth / 2, viewHeight / 2);
+	mapBorder.setPosition(viewWidth / 2, viewHeight / 2);
 }
 
 sf::Vector2f Editor::relativeViewPosition(float x, float y)
@@ -259,7 +277,7 @@ void Editor::handleTextEntered(sf::Event event)
 		}
 		selectedInput->value << character;
 	}
-	else if ((int)character == 8 && !selectedInput->value.str().empty()) // backspace to delete
+	else if ((int)character == 8) // backspace to delete
 	{
 		removeLastCharFromStringstream(selectedInput->value);
 	}
@@ -269,10 +287,9 @@ void Editor::handleTextEntered(sf::Event event)
 
 void Editor::processMouseInput()
 {
-	mousePosition     = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
-	prevMouseMapCoord = mouseMapCoord;
-	mouseMapCoord.x   = std::floor((mousePosition.x - mapBorderBounds.left - mapBorderThickness * zoom) / (tilesize * zoom));
-	mouseMapCoord.y   = std::floor((mousePosition.y - mapBorderBounds.top  - mapBorderThickness * zoom) / (tilesize * zoom));
+	mousePosition = window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+	mouseMapCoord.x = std::floor((mousePosition.x - mapBorderBounds.left - mapBorderThickness * zoom) / (tilesize * zoom));
+	mouseMapCoord.y = std::floor((mousePosition.y - mapBorderBounds.top  - mapBorderThickness * zoom) / (tilesize * zoom));
 
 	handleButtonPresses();
 	handleDrag();
@@ -933,11 +950,13 @@ void Editor::clampSizeInputs()
 	int width = std::atoi(mapWidthInput.value.str().c_str());        // string to int
 	width = std::clamp((unsigned int)width, minMapSize, maxMapSize);
 	mapWidthInput.value.str(std::to_string(width));                  // int to string
+	mapWidthInput.value.seekp(mapWidthInput.value.str().length());
 
 	// clamp height
 	int height = std::atoi(mapHeightInput.value.str().c_str());        // string to int
 	height = std::clamp((unsigned int)height, minMapSize, maxMapSize);
 	mapHeightInput.value.str(std::to_string(height));                  // int to string
+	mapHeightInput.value.seekp(mapHeightInput.value.str().length());
 }
 
 void Editor::drawSizeInputs()

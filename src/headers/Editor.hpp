@@ -18,6 +18,14 @@ struct Input
 	int getValue();
 };
 
+struct Region
+{
+	std::vector<int> region;
+	sf::Vector2u crop;
+
+	Region(unsigned int xCrop, unsigned int yCrop, std::vector<int> _region);
+};
+
 struct Colors
 {
 	sf::Color background;
@@ -88,16 +96,21 @@ struct Editor
 	// editor related
 	enum Tilesets { Empty, Normal, Ice, Bounce, Selection };
 	std::vector<sf::Sprite*> tilesetSprites;
+
+	std::vector<Region> regions;
+
 	sf::Vector3i emptyTile;
 	sf::Vector3i spawnTile;
 	sf::Vector3i exitTile;
-	sf::Vector2u selectionCoord;
 	sf::Vector2u spawnPosition;
 	sf::Vector2u exitPosition;
+
+	sf::Vector2u selectionCoord;
 	std::vector<sf::Vector2u> fillTiles;
 	enum Method { Brush, Fill };
 	Method method = Brush;
 	bool erase = false;
+
 	int sawbladeTimer         = 0;
 	int sawbladeFrame         = 0;
 	int sawbladeFrameCount    = 8;
@@ -137,8 +150,7 @@ struct Editor
 
 	// mouse related
 	sf::Vector2f mousePosition;
-	sf::Vector2i prevMouseMapCoord;
-	sf::Vector2i     mouseMapCoord;
+	sf::Vector2i mouseMapCoord;
 	bool leftClick   = false;
 	bool middleClick = false;
 	// drag
@@ -187,6 +199,8 @@ struct Editor
 	// ----- FUNCTIONS ----- //
 
 	Editor(sf::RenderWindow &_window, sf::View &_view);
+
+	void declareRegions();
 
 	// view related
 	void resetView();
