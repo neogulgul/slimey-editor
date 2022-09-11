@@ -47,21 +47,22 @@ Colors::Colors()
 Sprites::Sprites()
 {
 	// textures
-	tileset_normalTexture   .loadFromFile("assets/textures/tileset_normal.png");
-	tileset_iceTexture      .loadFromFile("assets/textures/tileset_ice.png");
-	tileset_bounceTexture   .loadFromFile("assets/textures/tileset_bounce.png");
-	tileset_selectionTexture.loadFromFile("assets/textures/tileset_selection.png");
-	sawbladeTexture         .loadFromFile("assets/textures/sawblade.png");
-	slimeyTexture           .loadFromFile("assets/textures/slimey.png");
-	exitSignTexture         .loadFromFile("assets/textures/exit-sign.png");
+	slimeyTexture       .loadFromFile("assets/textures/slimey.png");
+	tilesetNormalTexture.loadFromFile("assets/textures/tilesets/normal.png");
+	tilesetIceTexture   .loadFromFile("assets/textures/tilesets/ice.png");
+	tilesetBounceTexture.loadFromFile("assets/textures/tilesets/bounce.png");
+	tilesetOtherTexture .loadFromFile("assets/textures/tilesets/other.png");
+	exitSignTexture     .loadFromFile("assets/textures/exit-sign.png");
+	sawbladeTexture     .loadFromFile("assets/textures/sawblade.png");
+
 	// sprites
-	tileset_normal   .setTexture(tileset_normalTexture);
-	tileset_ice      .setTexture(tileset_iceTexture);
-	tileset_bounce   .setTexture(tileset_bounceTexture);
-	tileset_selection.setTexture(tileset_selectionTexture);
-	sawblade         .setTexture(sawbladeTexture);
-	slimey           .setTexture(slimeyTexture);
-	exitSign         .setTexture(exitSignTexture);
+	slimey       .setTexture(slimeyTexture);
+	tilesetNormal.setTexture(tilesetNormalTexture);
+	tilesetIce   .setTexture(tilesetIceTexture);
+	tilesetBounce.setTexture(tilesetBounceTexture);
+	tilesetOther .setTexture(tilesetOtherTexture);
+	exitSign     .setTexture(exitSignTexture);
+	sawblade     .setTexture(sawbladeTexture);
 }
 
 Editor::Editor(sf::RenderWindow &_window, sf::View &_view)
@@ -71,15 +72,12 @@ Editor::Editor(sf::RenderWindow &_window, sf::View &_view)
 	
 	text = Text(*window);
 
-	tilesetSprites.push_back(&sprites.tileset_normal);
-	tilesetSprites.push_back(&sprites.tileset_ice);
-	tilesetSprites.push_back(&sprites.tileset_bounce);
-	tilesetSprites.push_back(&sprites.tileset_selection);
+	tilesetSprites.push_back(&sprites.tilesetNormal);
+	tilesetSprites.push_back(&sprites.tilesetIce);
+	tilesetSprites.push_back(&sprites.tilesetBounce);
+	tilesetSprites.push_back(&sprites.tilesetOther);
 
 	declareRegions();
-
-	spawnTile = sf::Vector3i(4, 0, 3);
-	exitTile  = sf::Vector3i(4, 0, 4);
 
 	mapSize.x = initialMapWidth;
 	mapSize.y = initialMapHeight;
@@ -109,7 +107,7 @@ Editor::Editor(sf::RenderWindow &_window, sf::View &_view)
 
 	ghostTile.setSize(tileDimension);
 
-	selectionTilesetBackground.setSize(sf::Vector2f(sprites.tileset_selectionTexture.getSize().x, sprites.tileset_selectionTexture.getSize().y));
+	selectionTilesetBackground.setSize(sf::Vector2f(sprites.tilesetOtherTexture.getSize().x, sprites.tilesetOtherTexture.getSize().y));
 	selectionTilesetBackground.setFillColor(colors.selectionBackground);
 	
 	selectionTilesetSelection.setSize(tileDimension);
@@ -362,7 +360,7 @@ void Editor::eyedropper()
 	int tileset = getTileset(mouseMapCoord.x, mouseMapCoord.y);
 	if (tileset == Tilesets::Empty) { return; }
 
-	if (tileset < Tilesets::Selection)
+	if (tileset < Tilesets::Other)
 	{
 		selectionCoord = sf::Vector2u(0, tileset - 1);
 	}
@@ -414,7 +412,7 @@ int Editor::getSelectedTileset()
 		return Tilesets::Bounce;
 	}
 
-	return Tilesets::Selection;
+	return Tilesets::Other;
 }
 
 bool Editor::invalidTile(unsigned int x, unsigned int y)
@@ -469,7 +467,7 @@ void Editor::adjustTile(unsigned int x, unsigned int y)
 {
 	if (invalidTile(x, y)) { return; }
 
-	if (getTileset(x, y) != Tilesets::Empty && getTileset(x, y) != Tilesets::Selection)
+	if (getTileset(x, y) != Tilesets::Empty && getTileset(x, y) != Tilesets::Other)
 	{
 		map.at(x).at(y) = determineTile(sf::Vector2i(x, y), getTileset(x, y));
 	}
@@ -688,10 +686,10 @@ void Editor::fillArea()
 
 	std::vector<std::vector<sf::Vector3i>> localMap = map;
 
-	if (getSelectedTileset() < Tilesets::Selection)
+	if (getSelectedTileset() < Tilesets::Other)
 	{
 		// fill (int oldTileset, int newTileset)
-		if (getTileset(mouseMapCoord.x, mouseMapCoord.y) < Tilesets::Selection)
+		if (getTileset(mouseMapCoord.x, mouseMapCoord.y) < Tilesets::Other)
 		{
 			if (getTileset(mouseMapCoord.x, mouseMapCoord.y) != getSelectedTileset())
 			{
@@ -707,7 +705,7 @@ void Editor::fillArea()
 	else
 	{
 		// fill (int oldTileset, vector3i newTile)
-		if (getTileset(mouseMapCoord.x, mouseMapCoord.y) < Tilesets::Selection)
+		if (getTileset(mouseMapCoord.x, mouseMapCoord.y) < Tilesets::Other)
 		{
 			fill(localMap, mouseMapCoord.x, mouseMapCoord.y, getTileset(mouseMapCoord.x, mouseMapCoord.y), sf::Vector3i(getSelectedTileset(), selectionCoord.x, selectionCoord.y));
 		}
@@ -815,7 +813,7 @@ void Editor::drawMapTiles()
 				tilesetCrop.height = tilesize;
 
 				sf::Sprite* tilesetSprite;
-				if (tileset == Tilesets::Selection && tile.y == 1 && tile.z == 4)
+				if (tile == sawbladeTile)
 				{
 					tilesetSprite = &sprites.sawblade;
 					tilesetCrop.left = sawbladeFrame * tilesize;
@@ -911,11 +909,11 @@ void Editor::drawSelectionTileset()
 	selectionTilesetBackground.setPosition(relativeViewPosition(0, 0));
 	window->draw(selectionTilesetBackground);
 
-	sprites.tileset_selection.setTextureRect(sf::IntRect(0, 0, sprites.tileset_selectionTexture.getSize().x, sprites.tileset_selectionTexture.getSize().y));
-	sprites.tileset_selection.setScale(1, 1);
-	sprites.tileset_selection.setPosition(relativeViewPosition(0, 0));
-	selectionTilesetBounds = sprites.tileset_selection.getGlobalBounds();
-	window->draw(sprites.tileset_selection);
+	sprites.tilesetOther.setTextureRect(sf::IntRect(0, 0, sprites.tilesetOtherTexture.getSize().x, sprites.tilesetOtherTexture.getSize().y));
+	sprites.tilesetOther.setScale(1, 1);
+	sprites.tilesetOther.setPosition(relativeViewPosition(0, 0));
+	selectionTilesetBounds = sprites.tilesetOther.getGlobalBounds();
+	window->draw(sprites.tilesetOther);
 
 	selectionTilesetSelection.setPosition(relativeViewPosition(selectionCoord.x * tilesize, selectionCoord.y * tilesize));
 	window->draw(selectionTilesetSelection);

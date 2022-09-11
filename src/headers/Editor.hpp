@@ -4,6 +4,11 @@
 
 #include "Text.hpp"
 
+#define emptyTile    sf::Vector3i()
+#define spawnTile    sf::Vector3i(4, 0, 3)
+#define exitTile     sf::Vector3i(4, 0, 4)
+#define sawbladeTile sf::Vector3i(4, 1, 0)
+
 struct Input
 {
 	sf::RectangleShape shape;
@@ -47,21 +52,22 @@ struct Colors
 struct Sprites
 {
 	// textures
-	sf::Texture tileset_normalTexture;
-	sf::Texture tileset_iceTexture;
-	sf::Texture tileset_bounceTexture;
-	sf::Texture tileset_selectionTexture;
-	sf::Texture sawbladeTexture;
 	sf::Texture slimeyTexture;
+	sf::Texture tilesetNormalTexture;
+	sf::Texture tilesetIceTexture;
+	sf::Texture tilesetBounceTexture;
+	sf::Texture tilesetOtherTexture;
 	sf::Texture exitSignTexture;
+	sf::Texture sawbladeTexture;
+
 	// sprites
-	sf::Sprite tileset_normal;
-	sf::Sprite tileset_ice;
-	sf::Sprite tileset_bounce;
-	sf::Sprite tileset_selection;
-	sf::Sprite sawblade;
 	sf::Sprite slimey;
+	sf::Sprite tilesetNormal;
+	sf::Sprite tilesetIce;
+	sf::Sprite tilesetBounce;
+	sf::Sprite tilesetOther;
 	sf::Sprite exitSign;
+	sf::Sprite sawblade;
 
 	Sprites();
 };
@@ -94,14 +100,11 @@ struct Editor
 	Text text;
 
 	// editor related
-	enum Tilesets { Empty, Normal, Ice, Bounce, Selection };
+	enum Tilesets { Empty, Normal, Ice, Bounce, Other };
 	std::vector<sf::Sprite*> tilesetSprites;
 
 	std::vector<Region> regions;
 
-	sf::Vector3i emptyTile;
-	sf::Vector3i spawnTile;
-	sf::Vector3i exitTile;
 	sf::Vector2u spawnPosition;
 	sf::Vector2u exitPosition;
 
